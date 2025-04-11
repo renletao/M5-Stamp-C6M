@@ -60,11 +60,11 @@ void app_main(void)
     i2c_handle      = i2c_bus_create(PORT_NUM, &conf);
     uint8_t address = 0;
 
-    i2c_bus_scan(i2c_handle, &address, 1);
+    // i2c_bus_scan(i2c_handle, &address, 1);
 
-    stamp_stm32_dev_handle = i2c_bus_device_create(i2c_handle, address, 0);
+    stamp_stm32_dev_handle = i2c_bus_device_create(i2c_handle, STAMP_STM32_DEFAULT_I2C_ADDRESS, 0);
 
-    int ret = stamp_stm32_init(&stamp_stm32_dev, address, i2c_read_reg, i2c_write_reg);
+    int ret = stamp_stm32_init(&stamp_stm32_dev, STAMP_STM32_DEFAULT_I2C_ADDRESS, i2c_read_reg, i2c_write_reg);
     if (ret != 0) {
         // 初始化失败处理
     }
@@ -74,7 +74,7 @@ void app_main(void)
     // stamp_stm32_test_case_3(&stamp_stm32_dev); // 读取AW32001的状态、错误
     // stamp_stm32_test_case_4(&stamp_stm32_dev); // 关闭esp32
     // stamp_stm32_test_case_5(&stamp_stm32_dev); // VOUT输出参数
-    // stamp_stm32_test_case_6(&stamp_stm32_dev); // USB检测
+    stamp_stm32_test_case_6(&stamp_stm32_dev); // USB检测
     // stamp_stm32_test_case_7(&stamp_stm32_dev); // 充电电压，充电电流，充电使能
     // stamp_stm32_test_case_8(&stamp_stm32_dev); // 复位ESP32
     // stamp_stm32_test_case_9(&stamp_stm32_dev); // 进入下载模式

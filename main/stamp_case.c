@@ -141,10 +141,24 @@ void stamp_stm32_test_case_5(stamp_stm32_t *dev)
 
 void stamp_stm32_test_case_6(stamp_stm32_t *dev)
 {
+    gpio_config_t io_conf = {.mode         = GPIO_MODE_OUTPUT,
+                             .pull_up_en   = GPIO_PULLUP_DISABLE,
+                             .pull_down_en = GPIO_PULLDOWN_DISABLE,
+                             .intr_type    = GPIO_INTR_DISABLE};
+
+    io_conf.pin_bit_mask = 1ULL << GPIO_NUM_4;
+
+    gpio_config(&io_conf);
+
     uint8_t usb_status = 0;
     while (1) {
         if (stamp_stm32_get_usb_detect_config(dev, &usb_status) != -1) {
             ESP_LOGI(TAG, "usb_status: %u\n", usb_status);
+            if (usb_status) {
+                gpio_set_level(GPIO_NUM_4, 1);
+            } else {
+                gpio_set_level(GPIO_NUM_4, 0);
+            }
         } else {
             while (1) {
                 ESP_LOGE(TAG, "read usb status error");
@@ -555,7 +569,7 @@ void stamp_stm32_test_case_16(stamp_stm32_t *dev)
         }
 
         if (stamp_stm32_get_firmware_version(dev, &fw_ver) != -1) {
-            if (boot_ver) {
+            if (fw_ver) {
             } else {
                 ESP_LOGE(TAG, "fw ver error");
             }
@@ -567,7 +581,7 @@ void stamp_stm32_test_case_16(stamp_stm32_t *dev)
         } else {
             ESP_LOGE(TAG, "read address error");
         }
-        vTaskDelay(10 / portTICK_PERIOD_MS);
+        // vTaskDelay(10 / portTICK_PERIOD_MS);
 
         // ESP_LOGI(TAG, ">>>>>>>>>>>>>>>>>>>>>>>***<<<<<<<<<<<<<<<<<<<<");
     }
